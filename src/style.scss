@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Bellefair&family=Epilogue:ital,wght@0,400;1,500&family=Karla:wght@400;700&family=Roboto&display=swap');
+$home-color: #FFE031;
+$background-color: #E5E5E5;
+$dark-color: #414141;
+$gray-color: #A7A7A7;
+$light-gray: #F2F2F2;
+$font-size: 16px;
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto';
+    font-size: $font-size;
+}
