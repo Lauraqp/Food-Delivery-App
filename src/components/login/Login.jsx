@@ -1,34 +1,103 @@
-import React from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import logo from "../../assest/Logo.png";
 import "./login.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "../../firebase/firebaseConfig";
 
 const Login = () => {
   const navigate = useNavigate();
-  const handlePageLogin = () => {
-    navigate("/verification");
+  const [numberPhone, setNumberPhone] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { isValid, value: validNumber } = validationPhone(numberPhone, 10);
+    console.log(isValid, validNumber);
+    if (!isValid) {
+      alert("El número debe contener mínimo 10 carácteres");
+    }
+    generateReCaptcha();
+    const captchaValue = window.recaptchaVerifier; //guardar en const el captcha value
+    signInWithPhoneNumber(auth,`+57${validNumber}`, captchaValue) //metodo con tres parametros
+      .then((confirmationResult) => {
+        //si se cumple promesa llamar confirmation
+        window.confirmationResult = confirmationResult; //respuesta de la promesa de signinwithphonenumber
+        console.log(confirmationResult);
+        navigate("/CodeVerification");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
+
+  const validationPhone = (phoneNumbers, lengthString) => {
+    //validatephone: cuantos números hay
+    if (!phoneNumbers) {
+      //si no hay números retornar false, si hay ingresa en value
+      return false;
+    }
+    const value = phoneNumbers.replace(/\D/g, ""); //replace: eliminar espacios en blanco
+    const valueLength = value.length;
+    return {
+      //esta funcion retorna un objeto con dos propiedades
+      isValid: valueLength === lengthString, //comparación: longitud es igual a la cantidad de numeros condicionados
+      value, //segunda propiedad
+    };
+  };
+
+  const generateReCaptcha = () => {
+    try {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        "recaptch-container", //recaptch container hacer referencia a un div que debemos crear en el formulario
+        {
+          size: "invisible",
+          callback: (response) => {
+            //reCAPTCHA solver, allow signInWithPhoneNumber,
+            //onSignInSubmit();
+            //console.log(response)
+          },
+        },
+        auth
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="login">
       <section className="login__section">
-      <figure>
-        <img src={logo} alt="" className="login__image" />
-      </figure>
-      <h1>Sing in</h1>
-      <p>Login or create an account with your phone number to start ordering</p>
-      <input type="number" className="login__input" placeholder="+1"/>
-      </section>
+        <figure>
+          <img src={logo} alt="" className="login__image" />
+        </figure>
+        <h1>Sign in</h1>
+        <p>
+          Login or create an account with your phone number to start ordering
+        </p>
 
-      <article className="login__article">
-        <span>
-        By clicking the button next you accept
-        </span>
-        <Link>Terms of use</Link>
-      </article>
-      <button onClick={handlePageLogin} className="login__button">
-        Login
-      </button>
+        <form onSubmit={handleSubmit}>
+          <label>
+            <input
+              type="number"
+              onChange={(e) => {
+                setNumberPhone(e.target.value);
+              }}
+              value={numberPhone}
+              className="login__input"
+              placeholder="+1"
+            />
+
+            <article className="login__article">
+              <span>By clicking the button next you accept</span>
+              <Link>Terms of use</Link>
+            </article>
+          </label>
+          <button type="submit" className="login__button">
+            Login
+          </button>
+          <div id="recaptch-container"></div>
+        </form>
+      </section>
     </div>
   );
 };

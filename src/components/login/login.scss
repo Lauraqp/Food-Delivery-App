@@ -60,3 +60,64 @@ $light-gray: #f2f2f2;
     flex-direction: column;
   }
 }
+
+
+//VERIFICATION
+$home-color: #ffe031;
+$background-color: #e5e5e5;
+$dark-color: #414141;
+$gray-color: #a7a7a7;
+$light-gray: #f2f2f2;
+
+@mixin button($b) {
+  width: 700px;
+  height: 45px;
+  background-color: $home-color;
+  border: 1px solid $home-color;
+  border-radius: 10px;
+}
+@mixin inputs($i) {
+  width: 100%;
+  height: 5%;
+  background-color: transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid $home-color;
+}
+.verification {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  &__section {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 2vh;
+  }
+
+  &__image {
+    width: 100px;
+  }
+  &__button {
+    @include button(1);
+  }
+  &__input{
+    @include inputs(1)
+  }
+  &__icono{
+    position: absolute;
+    top: 155px;
+    left: 185px;
+  }
+  &__article{
+    display: flex;
+    flex-direction: column;
+  }
+}
