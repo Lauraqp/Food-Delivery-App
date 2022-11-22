@@ -1,17 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import iconoLocation from "../../assest/Svgl.png";
-import restaurant1 from "../../assest/Mask group.png";
-import restaurant2 from "../../assest/restaurant2.png";
-import restaurant3 from "../../assest/resturant3.png";
-import restaurant4 from "../../assest/restaurant4.png";
-
-
-
 import "./home.scss";
+import restaurantsStore from "../../redux/store/store"
 import hamburgers from "../../assest/hamburguers.png";
 import pizza from "../../assest/pizza.png";
+import { useDispatch, useSelector } from "react-redux";
+import { actionLogoutAsync } from "../../redux/actions/userActions";
+import { actionsPrintRestaurantsAsync } from "../../redux/actions/restaurantsActions";
+import { Card } from "react-bootstrap";
+import Filters from "./Filters";
+import Footer from "./Footer";
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const {restaurantes} = useSelector((store) => store.restaurantsStore);
+  useEffect(()=>{
+    dispatch(actionsPrintRestaurantsAsync())
+  },[dispatch])
+
+  const logOut = () => {
+    dispatch(actionLogoutAsync());
+  };
+
   return (
     <div className="home">
       <section className="home__location">
@@ -22,6 +32,7 @@ const Home = () => {
           <h1 className="home__h1">DELIVER TO</h1>
           <p className="home__p">882 Well St, New-york</p>
         </article>
+        <button onClick={logOut}>Logout</button>
       </section>
 
       <section>carousel</section>
@@ -39,60 +50,20 @@ const Home = () => {
         </article>
       </section>
 
-      <section className="home__cards">
-
-        <article className="home__restaurant">
-        <figure>
-          <img src={restaurant1} alt="" />
-        </figure>
-         <article>
-         <h3 className="home__h3">Pardes Restaurant</h3>
-          <p>
-            Work time 09:30 - 23:00 <br></br>
-            <span>Before you 4$</span>
-          </p>
-         </article>
-        </article>
-
-        <article className="home__restaurant">
-        <figure>
-          <img src={restaurant2} alt="" />
-        </figure>
-        <article>
-        <h3 className="home__h3">Glamour Kafe</h3>
-          <p>
-          Work time 09:00 - 21:00 <br></br>
-            <span>Before you 13$</span>
-          </p>
-        </article>
-        </article>
-
-        <article className="home__restaurant">
-        <figure>
-          <img src={restaurant3} alt="" />
-        </figure>
-        <article>
-        <h3 className="home__h3">Aromat Bakery</h3>
-          <p>
-          Work time 09:00 - 22:00<br></br>
-            <span>Before you 3$</span>
-          </p>
-        </article>
-        </article>
-
-        <article className="home__restaurant">
-        <figure>
-          <img src={restaurant4} alt="" />
-        </figure>
-          <article>
-          <h3 className="home__h3">Last night Restaurant & kafe</h3>
-          <p>
-          Work time 10:00 - 22:00<br></br>
-            <span>Before you 5$</span>
-          </p>
-          </article>
-        </article>
-      </section>
+      {
+        restaurantes && restaurantes.length? (
+          restaurantes.map((restaurante, index)=>(
+            <Card className="home__card">
+            <Card.Img  className="home__img" variant="top" src={restaurante.image} />
+            <Card.Body>
+              <Card.Title>{restaurante.name}</Card.Title>
+              <Card.Text>{`${restaurante.foodCategory}:${restaurante.hours}`}</Card.Text>
+            </Card.Body>
+          </Card>
+          ))
+        ): (<></>)
+      }
+      <Footer/>
     </div>
   );
 };

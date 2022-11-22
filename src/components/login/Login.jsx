@@ -4,8 +4,13 @@ import "./login.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
+import googleLogo from "../../assest/google.png"
+import { loginProviderAsync } from "../../redux/actions/userActions";
+import { useDispatch } from "react-redux";
+import Swal from "sweetalert2";
 
 const Login = () => {
+  const dispatch= useDispatch()
   const navigate = useNavigate();
   const [numberPhone, setNumberPhone] = useState("");
 
@@ -27,8 +32,19 @@ const Login = () => {
       })
       .catch((error) => {
         console.log(error);
+        Swal.fire('Hubo un error, intenta de nuevo', 'error'
+
+        )
+        navigate("/splash")
+
       });
   };
+
+  //GOOGLE
+  const handleLoginGoogle = ()=>{
+    dispatch(loginProviderAsync('google'))
+    navigate('/home')
+  }
 
   const validationPhone = (phoneNumbers, lengthString) => {
     //validatephone: cuantos números hay
@@ -50,7 +66,7 @@ const Login = () => {
       window.recaptchaVerifier = new RecaptchaVerifier(
         "recaptch-container", //recaptch container hacer referencia a un div que debemos crear en el formulario
         {
-          size: "invisible",
+          'size': "invisible",
           callback: (response) => {
             //reCAPTCHA solver, allow signInWithPhoneNumber,
             //onSignInSubmit();
@@ -86,6 +102,8 @@ const Login = () => {
               className="login__input"
               placeholder="+1"
             />
+            <img src={googleLogo} onClick={handleLoginGoogle} alt="Logo Google" className="login__logo" />
+
 
             <article className="login__article">
               <span>By clicking the button next you accept</span>

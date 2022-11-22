@@ -2,21 +2,24 @@ import { userTypes } from "../types/userType";
 
 export const userReducer = (state={},action)=>{
     switch (action.type) {
-        case userTypes: VALIDATE_PHONE:
+        case userTypes.VALIDATE_PHONE:
             return{
                 ...action.payload
             }
-            case userTypes.PHONE_AUTHENTICATION:
-                return{
-                    ...state,
-                    authentication:true
-                }
-                case userTypes.USER_CREATE:
+            case userTypes.USER_AUTHENTICATION:
                     return{
                         ...state,
-                        ...action.payload
+                        authentication:true //nueva propiedad
                     }
-
+            case userTypes.USER_CREATE:
+                return{
+                    ...state,
+                    ...action.payload //guarda la copia más lo que se agrega
+                }
+            case userTypes.USER_LOGOUT:
+                return{
+                    
+                }
         default:
             return state
     }
