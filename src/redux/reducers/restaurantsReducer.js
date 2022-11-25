@@ -16,8 +16,7 @@ export const restaurantsReducer = (state = initialState, action) => {
       case restaurantsTypes.FILTER_RESTAURANTS:
         return{
           ...state,
-          restaurantes: [...state.restaurantes],
-          filterRestaurants: action.payload
+          restaurantes: action.payload.restaurantes
         }
 
 

@@ -17,3 +17,4 @@ export const foodReducer = (state= initialState, action) => {
   }
 
 };
+

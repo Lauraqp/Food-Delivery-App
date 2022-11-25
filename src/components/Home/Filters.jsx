@@ -1,13 +1,44 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { actionsGetFoodAsync } from "../../redux/actions/foodActions";
+import React  from "react";
+import { Button, Form } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { actionFilterAsync, actionsPrintRestaurantsAsync } from "../../redux/actions/restaurantsActions";
+import HeaderComponent from "../splash/HeaderComponent";
+import Footer from "./Footer";
+
+
 
 const FiltersPage = () => {
-  
+  const dispatch= useDispatch()
+  const onSearch = (data) => {
+    const searchParam = data.search
+    console.log(searchParam);
+    dispatch(actionFilterAsync(searchParam));
+    }
+    const {register, handleSubmit}= useForm()
+
+
+    const restorePaletas = ({target}) => {
+      if (target.value.trim() === '') {
+        dispatch(actionsPrintRestaurantsAsync());
+      }
+  }
   return (
     <div>
-      platos
-      platos
+      <HeaderComponent/>
+       <Form className="d-flex m-3" onSubmit={handleSubmit(onSearch)}>
+                    <Form.Control
+                      type="search"
+                      {...register("search", {required: true})}
+                      placeholder="Search"
+                      className="me-2"
+                      aria-label="Search"
+                      onChange={restorePaletas}
+                      // onChange={onChangeSearch}
+                    />
+                    <Button type='submit' variant="outline-warning">Search</Button>
+                  </Form>
+          <Footer/>
     </div>
   )
 

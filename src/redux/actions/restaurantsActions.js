@@ -36,32 +36,58 @@ const actionsPrintRestaurantsSync = (restaurantes) => {
 };
 
 //FILTERS
-export const actionFilterRestaurantsAsync= (foodCategory,)=>{
-  return async(dispatch) =>{
-    const restaurantsCollection = collection(dataBase,collectionName)
-    const q = query(restaurantsCollection, where( foodCategory,"===",))
-    const restaurants = [];
+export const actionFilterRestaurantsAsync= (searchParam, searchValue )=>{
+  return async (dispatch) => {
+    const restaurantsCollection= collection(dataBase, collectionName);
+    const q = query(restaurantsCollection, where(searchParam, "==", searchValue));
+    const restaurantes = [];
     try {
-      const querySnapshot = await getDocs(q)
-      querySnapshot.forEach((doc)=>{
-        restaurants.push({
-          foodCategory: doc.foodCategory,
-          ...doc.data()
-        })
-      })
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        restaurantes.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
     } catch (error) {
       console.log(error);
-    }finally{
-      dispatch(actionFilterRestaurantsSync(restaurants))
+    } finally {
+      dispatch(actionFilterRestaurantsSync(restaurantes));
     }
-  }
+  };
 }
 
-const actionFilterRestaurantsSync = (restaurants) => {
+const actionFilterRestaurantsSync = (restaurantes) => {
   return {
     type: restaurantsTypes.FILTER_RESTAURANTS,
     payload: {
-      restaurantes: restaurants,
-    },
+      restaurantes: restaurantes
+    }
+  };
+};
+
+export const actionFilterAsync = (searchParam) => {
+  return async (dispatch) => {
+    const foodsCollection= collection(dataBase, collectionName);
+    const querySnapshot = await getDocs(foodsCollection);
+    const platos = [];
+    try {
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        platos.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+        //   console.log(doc.id, " => ", doc.data());
+      });
+  
+      const filterdPlatos = platos.filter((item) =>
+        item.name.toLowerCase().includes(searchParam.toLowerCase())
+      );
+      dispatch(actionFilterRestaurantsSync(filterdPlatos));
+    } catch (error) {
+      console.error(error);
+      dispatch(actionFilterRestaurantsSync([]));
+    }
   };
 };

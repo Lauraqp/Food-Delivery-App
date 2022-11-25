@@ -1,15 +1,16 @@
 import React, { useEffect } from "react";
 import iconoLocation from "../../assest/Svgl.png";
 import "./home.scss";
-import hamburgers from "../../assest/hamburguers.png";
-import pizza from "../../assest/pizza.png";
 import { useDispatch, useSelector } from "react-redux";
 import { actionLogoutAsync } from "../../redux/actions/userActions";
-import { actionsPrintRestaurantsAsync } from "../../redux/actions/restaurantsActions";
+import { actionFilterRestaurantsAsync, actionsPrintRestaurantsAsync } from "../../redux/actions/restaurantsActions";
 import { Card } from "react-bootstrap";
 import Footer from "./Footer";
 import CarouselHome from "./CarouselHome";
-import { Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
+import Stars from "./Stars";
+import { Button } from "react-bootstrap";
+import { category } from "../../services/data";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -19,6 +20,11 @@ const Home = () => {
   useEffect(() => {
     dispatch(actionsPrintRestaurantsAsync());
   }, [dispatch]);
+  
+  const onFiltered = (searchValue) => {
+    const searchParam = "category";
+    dispatch(actionFilterRestaurantsAsync(searchParam, searchValue));
+  };
 
   const logOut = () => {
     dispatch(actionLogoutAsync());
@@ -42,19 +48,27 @@ const Home = () => {
       </section>
 
       <CarouselHome />
-
-      <section className="home__categorys">
-        <h2 className="home__h2">Restaurants and cafes</h2>
-        <article className="home__buttons">
-          <button className="home__button">All</button>
-          <button className="home__button">
-            <img src={hamburgers} alt="" /> Fast Food
-          </button>
-          <button className="home__button">
-            <img src={pizza} alt="" /> Pizza
-          </button>
-        </article>
-      </section>
+      <div className="d-flex justify-content-evenly mb-3">
+      <Button
+        variant="warning"
+        onClick={() => {
+          dispatch(actionsPrintRestaurantsAsync());
+        }}
+      >
+        All
+      </Button>
+      {category.map((item) => (
+        <Button
+          key={item.value}
+          variant="warning"
+          onClick={() => {
+            onFiltered(item.label);
+          }}
+        >
+          {item.label}
+        </Button>
+      ))}
+    </div>
 
       {restaurantes && restaurantes.length ? (
         restaurantes.map((restaurante, index) => (
@@ -70,7 +84,9 @@ const Home = () => {
             />
             <Card.Body>
               <Card.Title>{restaurante.name}</Card.Title>
-              <Card.Text>{`${restaurante.foodCategory}:${restaurante.hours}`}</Card.Text>
+              <Card.Text>{`Category: ${restaurante.category}`}</Card.Text>
+              <Card.Text>{`${restaurante.hours}`}</Card.Text>
+              <Stars/>
             </Card.Body>
           </Card>
         ))

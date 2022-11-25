@@ -22,7 +22,6 @@ const FoodsPage = () => {
 
   return (
     <div>
-      
       {filterFood.length? (
         filterFood.map((plato, index) => (
           <Card key={index} className="food">
@@ -31,8 +30,8 @@ const FoodsPage = () => {
               <Card.Title>{plato.name}</Card.Title>
               <Card.Text>{`${plato.foodCategory}:${plato.description}`}</Card.Text>
               <Card.Text>{plato.price}</Card.Text>
-              <Button >+</Button>
-              <Button >-</Button>
+              <Button variant="outline-warning">+</Button>
+              <Button variant="outline-warning">-</Button>
               {/* <Button onClick={total}>Total</Button> */}
             </Card.Body>
           </Card>
