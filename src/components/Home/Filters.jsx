@@ -20,11 +20,11 @@ const FiltersPage = () => {
 
     const restorePlatos = ({target}) => {
       if (target.value.trim() === '') {
-        dispatch(actionFilterAsync());
+        dispatch(actionsPrintRestaurantsAsync());
       }
   }
   return (
-    <div>
+    <div className="filters">
       <HeaderComponent/>
        <Form className="d-flex m-3" onSubmit={handleSubmit(onSearch)}>
                     <Form.Control
@@ -38,7 +38,7 @@ const FiltersPage = () => {
                     />
                     <Button type='submit' variant="outline-warning">Search</Button>
                   </Form>
-          <Footer/>
+                  <Footer/>
     </div>
   )
 
