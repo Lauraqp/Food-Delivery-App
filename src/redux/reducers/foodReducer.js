@@ -2,6 +2,7 @@ import { foodTypes } from "../types/foodTypes";
 
 const initialState = {
   platos:[],
+  count:0
 };
 
 export const foodReducer = (state= initialState, action) => {

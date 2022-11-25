@@ -32,5 +32,3 @@ const actionsGetFoodSync =(platos)=>{
     payload:platos
   }
 }
-
-

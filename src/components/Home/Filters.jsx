@@ -18,9 +18,9 @@ const FiltersPage = () => {
     const {register, handleSubmit}= useForm()
 
 
-    const restorePaletas = ({target}) => {
+    const restorePlatos = ({target}) => {
       if (target.value.trim() === '') {
-        dispatch(actionsPrintRestaurantsAsync());
+        dispatch(actionFilterAsync());
       }
   }
   return (
@@ -33,7 +33,7 @@ const FiltersPage = () => {
                       placeholder="Search"
                       className="me-2"
                       aria-label="Search"
-                      onChange={restorePaletas}
+                      onChange={restorePlatos}
                       // onChange={onChangeSearch}
                     />
                     <Button type='submit' variant="outline-warning">Search</Button>
