@@ -14,38 +14,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [numberPhone, setNumberPhone] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { isValid, value: validNumber } = validationPhone(numberPhone, 10);
-    console.log(isValid, validNumber);
-    if (!isValid) {
-      alert("El número debe contener mínimo 10 carácteres");
-    }
-    generateReCaptcha();
-    const captchaValue = window.recaptchaVerifier; //guardar en const el captcha value
-    signInWithPhoneNumber(auth,`+57${validNumber}`, captchaValue) //metodo con tres parametros
-      .then((confirmationResult) => {
-        //si se cumple promesa llamar confirmation
-        window.confirmationResult = confirmationResult; //respuesta de la promesa de signinwithphonenumber
-        console.log(confirmationResult);
-        navigate("/CodeVerification");
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire('Hubo un error, intenta de nuevo', 'error'
-
-        )
-        navigate("/splash")
-
-      });
-  };
-
-  //GOOGLE
-  const handleLoginGoogle = ()=>{
-    dispatch(loginProviderAsync('google'))
-    navigate('/home')
-  }
-
   const validationPhone = (phoneNumbers, lengthString) => {
     //validatephone: cuantos números hay
     if (!phoneNumbers) {
@@ -61,12 +29,36 @@ const Login = () => {
     };
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { isValid, value: validNumber } = validationPhone(numberPhone, 10);
+    console.log(isValid, validNumber);
+    if (!isValid) {
+      alert("El número debe contener mínimo 10 carácteres");
+    }
+    generateReCaptcha();
+    const captchaValue = window.recaptchaVerifier; //guardar en const el captcha value
+    signInWithPhoneNumber(auth,`+57${validNumber}`, captchaValue) //metodo con tres parametros
+      .then((confirmationResult) => {//si se cumple promesa llamar confirmation
+        window.confirmationResult = confirmationResult; //respuesta de la promesa de signinwithphonenumber
+        console.log(confirmationResult);
+        navigate("/codeverification");
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire('Hubo un error, intenta de nuevo', 'error'
+
+        )
+        navigate("/slide")
+      });
+  };
+
   const generateReCaptcha = () => {
     try {
       window.recaptchaVerifier = new RecaptchaVerifier(
         "recaptch-container", //recaptch container hacer referencia a un div que debemos crear en el formulario
         {
-          'size': "invisible",
+          size:"invisible",
           callback: (response) => {
             //reCAPTCHA solver, allow signInWithPhoneNumber,
             //onSignInSubmit();
@@ -79,6 +71,11 @@ const Login = () => {
       console.log(error);
     }
   };
+  //GOOGLE
+  const handleLoginGoogle = ()=>{
+    dispatch(loginProviderAsync('google'))
+    navigate('/home')
+  }
 
   return (
     <div className="login">

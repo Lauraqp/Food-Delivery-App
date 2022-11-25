@@ -6,7 +6,7 @@ import image2 from "../../assest/Svg (2).png";
 import "./slide.scss";
 import { useNavigate } from "react-router-dom";
 
-const Slide = () => {
+const SlidePage = () => {
   const navigate = useNavigate();
   const changeImage = () => {
     navigate("/login");
@@ -33,7 +33,7 @@ const Slide = () => {
   );
 };
 
-export default Slide;
+export default SlidePage;
 
 // // import React, { useEffect, useState } from 'react'
 // import React from 'react'

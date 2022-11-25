@@ -1,25 +1,31 @@
 import React, { useEffect } from "react";
 import iconoLocation from "../../assest/Svgl.png";
 import "./home.scss";
-import restaurantsStore from "../../redux/store/store"
 import hamburgers from "../../assest/hamburguers.png";
 import pizza from "../../assest/pizza.png";
 import { useDispatch, useSelector } from "react-redux";
 import { actionLogoutAsync } from "../../redux/actions/userActions";
 import { actionsPrintRestaurantsAsync } from "../../redux/actions/restaurantsActions";
 import { Card } from "react-bootstrap";
-import Filters from "./Filters";
 import Footer from "./Footer";
+import CarouselHome from "./CarouselHome";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {restaurantes} = useSelector((store) => store.restaurantsStore);
-  useEffect(()=>{
-    dispatch(actionsPrintRestaurantsAsync())
-  },[dispatch])
+  const { restaurantes } = useSelector((store) => store.restaurantsStore);
+  console.log(restaurantes);
+  useEffect(() => {
+    dispatch(actionsPrintRestaurantsAsync());
+  }, [dispatch]);
 
   const logOut = () => {
     dispatch(actionLogoutAsync());
+  };
+
+  const sendPlatos = (restaurante) => {
+    navigate(`/FoodsPage${restaurante}`);
   };
 
   return (
@@ -35,7 +41,7 @@ const Home = () => {
         <button onClick={logOut}>Logout</button>
       </section>
 
-      <section>carousel</section>
+      <CarouselHome />
 
       <section className="home__categorys">
         <h2 className="home__h2">Restaurants and cafes</h2>
@@ -50,20 +56,28 @@ const Home = () => {
         </article>
       </section>
 
-      {
-        restaurantes && restaurantes.length? (
-          restaurantes.map((restaurante, index)=>(
-            <Card className="home__card">
-            <Card.Img  className="home__img" variant="top" src={restaurante.image} />
+      {restaurantes && restaurantes.length ? (
+        restaurantes.map((restaurante, index) => (
+          <Card
+            key={index}
+            className="home__card"
+            onClick={() => sendPlatos(restaurante.name)}
+          >
+            <Card.Img
+              className="home__img"
+              variant="top"
+              src={restaurante.image}
+            />
             <Card.Body>
               <Card.Title>{restaurante.name}</Card.Title>
               <Card.Text>{`${restaurante.foodCategory}:${restaurante.hours}`}</Card.Text>
             </Card.Body>
           </Card>
-          ))
-        ): (<></>)
-      }
-      <Footer/>
+        ))
+      ) : (
+        <></>
+      )}
+      <Footer />
     </div>
   );
 };

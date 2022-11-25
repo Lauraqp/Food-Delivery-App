@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assest/Logo.png";
@@ -7,23 +7,35 @@ import "./login.scss";
 
 const CodeVerification = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate=useNavigate()
   const [codigo, setCodigo] = useState("");
   const user = useSelector((store) => store.userStore);
-  const validateCode = ({ target }) => {
+  console.log(user);
+  const validateCodigo = ({ target }) => {
     const code = target.value;
     setCodigo(code);
     if (code.length === 6) {
-      //si longitud de valor ingresado esta en target
       dispatch(actionSignPhoneAsync(code));
-      if (!user.name && !user.email) { //si no existen es la primera vez que ingresa el usuario
-        navigate(`/register/${user.uid}`) //si el usuario no tiene datos, redireccionar a register 
+      if(!user.name && !user.email ){
+       
+        if (user.uid) {
+          console.log(user.uid);
+          
+        }
+        navigate(`/register/${user.uid}`)
+
+
       }
       else{
         navigate(`/home`)
+      
       }
     }
   };
+  useEffect(() => {
+    setTimeout(()=>{navigate("/login")},20000)
+  }, [])
+  
   return (
     <div className="verification">
       <section className="verification__section">
@@ -37,7 +49,7 @@ const CodeVerification = () => {
           <label>
             <input
               type="number"
-              onChange={validateCode}
+              onChange={validateCodigo}
               value={codigo}
               className="verification__input"
               placeholder="Confirmation code"
